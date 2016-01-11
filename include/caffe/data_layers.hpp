@@ -260,6 +260,35 @@ class ImageDataLayer : public BasePrefetchingDataLayer<Dtype> {
 };
 
 /**
+ * @brief Provides data to the Net from image set based files.
+ *
+ * TODO(ang): thorough documentation for Forward and proto params.
+ */
+template <typename Dtype>
+class KImageDataLayer : public BasePrefetchingDataLayer<Dtype> {
+ public:
+  explicit KImageDataLayer(const LayerParameter& param)
+      : BasePrefetchingDataLayer<Dtype>(param) {}
+  virtual ~KImageDataLayer();
+  virtual void DataLayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual inline const char* type() const { return "KImageData"; }
+  virtual inline int ExactNumBottomBlobs() const { return 0; }
+  virtual inline int ExactNumTopBlobs() const { return 2; }
+
+ protected:
+  shared_ptr<Caffe::RNG> prefetch_rng_;
+  virtual void ShuffleImages();
+  virtual void load_batch(Batch<Dtype>* batch);
+
+  vector<std::pair<std::string, int> > lines_;
+  map<int, int> label_index_;
+  vector<std::pair<int, vector<std::string> > > imagesets_;
+  int imagesets_id_;
+};
+
+/**
  * @brief Provides data to the Net from memory.
  *
  * TODO(dox): thorough documentation for Forward and proto params.
