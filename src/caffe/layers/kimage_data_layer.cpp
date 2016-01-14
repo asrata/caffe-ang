@@ -149,6 +149,8 @@ void KImageDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
 		timer.Start();
 		// Apply transformations (mirror, crop...) to the image
 		int offset = batch->data_.offset(item_id * num_images + image_i);
+        DLOG(INFO) << "imageid: " << image_id << ", imagename: " << imagesets_[imagesets_id_].second[image_id];
+        DLOG(INFO) << "offset = " << offset;
 		this->transformed_data_.set_cpu_data(prefetch_data + offset);
 		this->data_transformer_->Transform(cv_img, &(this->transformed_data_));
 		trans_time += timer.MicroSeconds();
